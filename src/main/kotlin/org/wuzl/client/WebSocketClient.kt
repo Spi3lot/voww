@@ -5,12 +5,10 @@ import org.wuzl.data.SessionData
 import org.wuzl.data.SessionDataDecoder
 import java.net.URI
 import java.nio.ByteBuffer
-import java.util.concurrent.locks.ReentrantLock
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.SourceDataLine
 import kotlin.concurrent.thread
-import kotlin.concurrent.withLock
 
 fun main() {
     val client = WebSocketClient("ws://62.47.159.43:8025/rtc")
@@ -31,10 +29,6 @@ class WebSocketClient(endpointUri: String) {
         private val audioFormat = AudioFormat(44100f, 16, 1, true, true)
 
     }
-
-    private val lock = ReentrantLock()
-
-    private val condition = lock.newCondition()
 
     private val speakers = hashMapOf<String, SourceDataLine>()
 
@@ -58,14 +52,8 @@ class WebSocketClient(endpointUri: String) {
                     readFromMicrophone(ByteArray(microphone.available() - microphoneBuffer.capacity()))
                 }
 
-                lock.withLock {
-                    if (speakers.isEmpty()) {
-                        condition.await()
-                    }
-
-                    readFromMicrophone(microphoneBuffer.array())
-                    session?.basicRemote?.sendBinary(microphoneBuffer)
-                }
+                readFromMicrophone(microphoneBuffer.array())
+                session?.basicRemote?.sendBinary(microphoneBuffer)
             }
         }
     }
@@ -77,7 +65,7 @@ class WebSocketClient(endpointUri: String) {
 
     @OnMessage
     fun onMessage(sessionData: SessionData) {
-        speakers.computeIfAbsent(sessionData.id) { condition.signal(); newSourceDataLine() }
+        speakers.computeIfAbsent(sessionData.id) { newSourceDataLine() }
             .write(sessionData.data, 0, sessionData.data.size)
     }
 

@@ -1,0 +1,25 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="VoiceOverWebWuzl.main:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/VoiceOverWebWuzl_main_jar</output-path>
+    <root id="archive" name="VoiceOverWebWuzl.main.jar">
+      <element id="module-output" name="VoiceOverWebWuzl.main" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/2.0.0/b48df2c4aede9586cc931ead433bc02d6fd7879e/kotlin-stdlib-2.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.tyrus/tyrus-spi/2.1.5/e31ef26ebc462cc74098bae258be6ddcdd6b6bd1/tyrus-spi-2.1.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/jakarta.activation/jakarta.activation-api/2.1.2/640c0d5aff45dbff1e1a1bc09673ff3a02b1ba12/jakarta.activation-api-2.1.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/jakarta.websocket/jakarta.websocket-api/2.2.0/60e525188fdb42120506debd90ffd4e204fd6f24/jakarta.websocket-api-2.2.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/jakarta.xml.bind/jakarta.xml.bind-api/4.0.1/ca2330866cbc624c7e5ce982e121db1125d23e15/jakarta.xml.bind-api-4.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.grizzly/grizzly-http/4.0.2/52403f90c894105ffe541c690f0a662e0614d590/grizzly-http-4.0.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.grizzly/grizzly-http-server/4.0.2/964ef18c55aea25633b12757863e2a3fae6d1190/grizzly-http-server-4.0.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/jakarta.websocket/jakarta.websocket-client-api/2.1.1/bc149b7e22d6b2372835a3124cbcf24924982874/jakarta.websocket-client-api-2.1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.tyrus/tyrus-client/2.1.5/f34abe82f97bc431a045538505480a42f7778d19/tyrus-client-2.1.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.tyrus/tyrus-container-grizzly-client/2.1.5/5cf6c9eda7df78bafa48c9fdb40c86d553e959b8/tyrus-container-grizzly-client-2.1.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/2.0.0/ef04d69b201a8575dd530b9339a8441fcd16339d/kotlin-stdlib-jdk8-2.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.tyrus/tyrus-container-grizzly-server/2.1.5/ecb31da1532856cb63a4aa731e82a78f9a138392/tyrus-container-grizzly-server-2.1.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.grizzly/grizzly-framework/4.0.2/dd0f696cc6f09bdc6f57a3a1c0a70615544ffa67/grizzly-framework-4.0.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/2.0.0/e0bc273ee1d963954bfc3e2f1b20ffcf0f4be44f/kotlin-stdlib-jdk7-2.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.tyrus/tyrus-core/2.1.5/ecb8cc24f5fb358f0598a9d726ac5fadf42a1911/tyrus-core-2.1.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.tyrus/tyrus-server/2.1.5/10c6822ef2a096d16d32ae2abc4dd4489f689d7d/tyrus-server-2.1.5.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
