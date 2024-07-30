@@ -14,7 +14,7 @@ import java.nio.ByteBuffer
  * @since 19.07.2024, Fr.
  */
 @ServerEndpoint("/rtc", encoders = [SessionDataEncoder::class])
-class RealTimeChatEndpoint {
+class RealTimeChat {
 
     companion object {
 

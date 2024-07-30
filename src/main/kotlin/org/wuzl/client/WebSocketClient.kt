@@ -7,12 +7,19 @@ import java.net.URI
 import java.nio.ByteBuffer
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.AudioSystem
+import javax.sound.sampled.FloatControl
 import javax.sound.sampled.SourceDataLine
 import kotlin.concurrent.thread
+import kotlin.math.log10
 
-fun main() {
+fun main(args: Array<String>) {
     val client = WebSocketClient("ws://62.47.159.43:8025/rtc")
-    client.startSending()
+
+    if (args.isNotEmpty()) {
+        client.speakerVolume = args[0].toFloat()
+    }
+
+    client.startSending(if (args.size > 1) args[1].toFloat() else 1.0f)
     println("Press ENTER to stop the client...")
     readln()
 }
@@ -30,6 +37,14 @@ class WebSocketClient(endpointUri: String) {
 
     }
 
+    // min volume is 0.0001f = 10^(-80/20)
+    // max volume is 2.0f = 10^(6.0206/20)
+    var speakerVolume = 1.0f
+        set(value) {
+            field = value.coerceIn(0.0001f, 2.0f)
+            println("Linear volume set to $field")
+        }
+
     private val speakers = hashMapOf<String, SourceDataLine>()
 
     private val microphoneBuffer = ByteBuffer.allocate(BUFFER_SIZE)
@@ -45,7 +60,7 @@ class WebSocketClient(endpointUri: String) {
             connectToServer(this@WebSocketClient, URI.create(endpointUri))
         }
 
-    fun startSending() {
+    fun startSending(microphoneVolume: Float = 1.0f) {  // TODO: use the microphoneVolume parameter
         thread(isDaemon = true) {
             while (session != null) {
                 if (DISCARD_OUTDATED && microphone.available() > microphoneBuffer.capacity()) {
@@ -83,6 +98,7 @@ class WebSocketClient(endpointUri: String) {
         return AudioSystem.getSourceDataLine(audioFormat)
             .apply {
                 open()
+                (getControl(FloatControl.Type.MASTER_GAIN) as FloatControl).value = log10(speakerVolume) * 20
                 start()
             }
     }
