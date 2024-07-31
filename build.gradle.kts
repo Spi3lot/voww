@@ -23,8 +23,18 @@ dependencies {
     compileOnly("jakarta.websocket:jakarta.websocket-client-api:$jakartaWebsocketVersion")
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 kotlin {
     jvmToolchain(8)
+}
+
+tasks.withType<JavaCompile> {
+    sourceCompatibility = JavaVersion.VERSION_1_8.toString()
+    targetCompatibility = JavaVersion.VERSION_1_8.toString()
 }
 
 tasks.withType<KotlinCompile> {
@@ -35,7 +45,7 @@ tasks.withType<KotlinCompile> {
 
 tasks.jar {
     manifest {
-        attributes["Main-Class"] = "org.wuzl.WebSocketClientKt"
+        attributes["Main-Class"] = "org.wuzl.client.WebSocketClientKt"
     }
 
     // To avoid the duplicate handling strategy error
