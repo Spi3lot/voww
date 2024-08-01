@@ -3,31 +3,19 @@ package org.wuzl.client
 import jakarta.websocket.*
 import org.wuzl.data.SessionData
 import org.wuzl.data.SessionDataDecoder
+import org.wuzl.data.VoiceChannel
+import org.wuzl.gui.WuzlGui
 import java.net.URI
 import java.nio.ByteBuffer
-import javax.sound.sampled.AudioFormat
-import javax.sound.sampled.AudioSystem
-import javax.sound.sampled.FloatControl
-import javax.sound.sampled.SourceDataLine
+import javax.sound.sampled.*
 import kotlin.concurrent.thread
-import kotlin.math.log10
-
-fun main(args: Array<String>) {
-    val client = WebSocketClient("ws://62.47.159.43:8025/rtc")
-
-    if (args.isNotEmpty()) {
-        client.speakerVolume = args[0].toFloat()
-    }
-
-    client.startSending(if (args.size > 1) args[1].toFloat() else 1.0f)
-    println("Press ENTER to stop the client...")
-    readln()
-}
 
 @ClientEndpoint(decoders = [SessionDataDecoder::class])
-class WebSocketClient(endpointUri: String) {
+class WebSocketClient(private val gui: WuzlGui) {
 
     companion object {
+
+        private const val ENDPOINT_URI = "ws://localhost:8025/rtc"
 
         private const val DISCARD_OUTDATED = true
 
@@ -39,30 +27,35 @@ class WebSocketClient(endpointUri: String) {
 
     // min volume is 0.0001f = 10^(-80/20)
     // max volume is 2.0f = 10^(6.0206/20)
-    var speakerVolume = 1.0f
+    var speakerGain = 1.0f
         set(value) {
-            field = value.coerceIn(0.0001f, 2.0f)
-            println("Linear volume set to $field")
+            field = value
+
+            speakers.values
+                .map { it.masterGain() }
+                .forEach { it.value = value.coerceIn(it.minimum, it.maximum) }
         }
 
     private val speakers = hashMapOf<String, SourceDataLine>()
 
     private val microphoneBuffer = ByteBuffer.allocate(BUFFER_SIZE)
 
-    private val microphone = AudioSystem.getTargetDataLine(audioFormat)
-        .apply {
-            open()
-            start()
-        }
+    private val microphone: TargetDataLine = AudioSystem.getTargetDataLine(audioFormat).apply {
+        open()
+        start()
+    }
 
-    private var session = ContainerProvider.getWebSocketContainer()
-        .run {
-            connectToServer(this@WebSocketClient, URI.create(endpointUri))
+    private var session: Session? = null
+
+    fun joinVoiceChannel(channel: VoiceChannel) {
+        session = ContainerProvider.getWebSocketContainer().run {
+            connectToServer(this@WebSocketClient, URI.create("$ENDPOINT_URI/${channel.uuid}"))
         }
+    }
 
     fun startSending(microphoneVolume: Float = 1.0f) {  // TODO: use the microphoneVolume parameter
-        thread(isDaemon = true) {
-            while (session != null) {
+        thread {
+            while (session != null && session?.isOpen == true) {  // TODO: locks
                 if (DISCARD_OUTDATED && microphone.available() > microphoneBuffer.capacity()) {
                     readFromMicrophone(ByteArray(microphone.available() - microphoneBuffer.capacity()))
                 }
@@ -71,6 +64,11 @@ class WebSocketClient(endpointUri: String) {
                 session?.basicRemote?.sendBinary(microphoneBuffer)
             }
         }
+    }
+
+    fun stopSending() {
+        session!!.close()
+        session = null
     }
 
     @OnOpen
@@ -84,6 +82,11 @@ class WebSocketClient(endpointUri: String) {
             .write(sessionData.data, 0, sessionData.data.size)
     }
 
+    @OnMessage
+    fun onMessage(channel: VoiceChannel) {
+        gui.channelListView.items.add(channel)
+    }
+
     @OnClose
     fun onClose() {
         session = null
@@ -95,12 +98,15 @@ class WebSocketClient(endpointUri: String) {
     }
 
     private fun newSourceDataLine(): SourceDataLine {
-        return AudioSystem.getSourceDataLine(audioFormat)
-            .apply {
-                open()
-                (getControl(FloatControl.Type.MASTER_GAIN) as FloatControl).value = log10(speakerVolume) * 20
-                start()
-            }
+        return AudioSystem.getSourceDataLine(audioFormat).apply {
+            open()
+            masterGain().value = speakerGain
+            start()
+        }
+    }
+
+    private fun SourceDataLine.masterGain(): FloatControl {
+        return getControl(FloatControl.Type.MASTER_GAIN) as FloatControl
     }
 
 }

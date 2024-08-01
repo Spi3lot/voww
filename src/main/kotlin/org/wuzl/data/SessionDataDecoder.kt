@@ -7,7 +7,7 @@ import java.nio.ByteBuffer
  *  @since 30.07.2024, Di.
  *  @author Emilio Zottel
  */
-class SessionDataDecoder : Decoder.Binary<SessionData> {
+object SessionDataDecoder : Decoder.Binary<SessionData> {
 
     override fun decode(bytes: ByteBuffer): SessionData {
         val sessionId = ByteArray(bytes.int).apply { bytes[this] }

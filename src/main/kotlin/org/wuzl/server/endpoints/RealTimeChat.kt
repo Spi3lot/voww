@@ -1,45 +1,70 @@
 package org.wuzl.server.endpoints
 
-import jakarta.websocket.OnClose
-import jakarta.websocket.OnMessage
-import jakarta.websocket.OnOpen
-import jakarta.websocket.Session
+import jakarta.websocket.*
+import jakarta.websocket.CloseReason.CloseCodes
+import jakarta.websocket.server.PathParam
 import jakarta.websocket.server.ServerEndpoint
 import org.wuzl.data.SessionData
 import org.wuzl.data.SessionDataEncoder
+import org.wuzl.data.VoiceChannel
 import java.nio.ByteBuffer
+import java.util.*
 
 /**
  * @author Emilio Zottel
  * @since 19.07.2024, Fr.
  */
-@ServerEndpoint("/rtc", encoders = [SessionDataEncoder::class])
+@ServerEndpoint("/rtc/{channel}", encoders = [SessionDataEncoder::class])
 class RealTimeChat {
 
     companion object {
 
-        private val sessions = hashSetOf<Session>()
+        private val sessions = hashMapOf<VoiceChannel, HashSet<Session>>()
 
     }
 
     @OnOpen
-    fun onOpen(session: Session) {
-        sessions.add(session)
+    fun onOpen(
+        @PathParam("channel") uuid: String,
+        session: Session,
+    ) {
+        val channel = VoiceChannel[UUID.fromString(uuid)]
+
+        if (channel === null) {
+            session.close(CloseReason(CloseCodes.UNEXPECTED_CONDITION, "VoiceChannel(uuid=$uuid) does not exist"))
+            return
+        }
+
+        sessions.computeIfAbsent(channel) { hashSetOf() }
+            .add(session)
+
         println("${session.id} opened")
     }
 
     @OnMessage
-    fun onMessage(bytes: ByteBuffer, session: Session) {
-        broadcast(bytes, session)
+    fun onMessage(
+        @PathParam("channel") uuid: String,
+        bytes: ByteBuffer,
+        session: Session,
+    ) {
+        broadcastExcept(bytes, session, sessions[VoiceChannel[UUID.fromString(uuid)]]!!)
     }
 
     @OnClose
-    fun onClose(session: Session) {
-        sessions.remove(session)
+    fun onClose(
+        @PathParam("channel") uuid: String,
+        session: Session,
+    ) {
+        // TODO: handle non-existent uuid when closing session manually
+        sessions[VoiceChannel[UUID.fromString(uuid)]]!!.remove(session)
         println("${session.id} closed")
     }
 
-    private fun broadcast(bytes: ByteBuffer, sourceSession: Session) {
+    private fun broadcastExcept(
+        bytes: ByteBuffer,
+        sourceSession: Session,
+        sessions: HashSet<Session>,
+    ) {
         with(SessionData(sourceSession.id, bytes.array())) {
             sessions.asSequence()
                 .filter { it != sourceSession }

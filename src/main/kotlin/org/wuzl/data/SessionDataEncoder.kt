@@ -7,7 +7,7 @@ import java.nio.ByteBuffer
  *  @since 30.07.2024, Di.
  *  @author Emilio Zottel
  */
-class SessionDataEncoder : Encoder.Binary<SessionData> {
+object SessionDataEncoder : Encoder.Binary<SessionData> {
 
     override fun encode(obj: SessionData): ByteBuffer {
         return with(obj.id.toByteArray()) {
