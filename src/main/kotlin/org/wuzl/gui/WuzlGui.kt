@@ -11,7 +11,7 @@ import javafx.scene.control.ListView
 import javafx.scene.control.Slider
 import javafx.stage.Stage
 import org.wuzl.client.WebSocketClient
-import org.wuzl.data.VoiceChannel
+import org.wuzl.communication.data.VoiceChannel
 
 fun main(args: Array<String>) {
     Application.launch(WuzlGui::class.java, *args)
@@ -40,19 +40,26 @@ class WuzlGui : Application() {
     override fun start(stage: Stage) {
         val root: Parent = FXMLLoader.load(WuzlGui::class.java.getResource("wuzl-gui.fxml"))
         stage.title = "Wuzl"
-        stage.isResizable = false
         stage.scene = Scene(root)
         stage.show()
     }
 
-    override fun init() {
+    fun initialize() {
         connectButton.onAction = EventHandler {
-            client.joinVoiceChannel(channelListView.selectionModel.selectedItem)
-            client.startSending()
+            val channel = channelListView.selectionModel.selectedItem
+
+            if (channel != null) {  // Do not disconnect when trying to connect to nothing
+                client.joinVoiceChannel(channel)
+                client.startSending()
+            }
         }
 
         disconnectButton.onAction = EventHandler {
-            client.stopSending()
+//            client.joinVoiceChannel(null)
+        }
+
+        volumeSlider.valueProperty().addListener { _, _, newValue ->
+            client.audioContainer.speakerGain = newValue.toFloat()
         }
     }
 

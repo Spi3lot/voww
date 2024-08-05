@@ -1,4 +1,6 @@
-package org.wuzl.data
+package org.wuzl.communication.data
+
+import java.io.Serializable
 
 /**
  *  @since 30.07.2024, Di.
@@ -7,4 +9,4 @@ package org.wuzl.data
 class SessionData(
     val id: String,
     val data: ByteArray,
-)
+) : Serializable

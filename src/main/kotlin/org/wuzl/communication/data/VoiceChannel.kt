@@ -1,5 +1,6 @@
-package org.wuzl.data
+package org.wuzl.communication.data
 
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -8,12 +9,14 @@ import java.util.*
  **/
 class VoiceChannel(
     val uuid: UUID,
-    val name: String,
-) {
+    private val name: String,
+) : Serializable {
 
     companion object {
 
-        private val channels = hashMapOf<UUID, VoiceChannel>()
+        private val channels = hashMapOf<UUID, VoiceChannel>(
+            with(UUID.randomUUID()) { this to VoiceChannel(this, "EÖV") }
+        )
 
         operator fun get(uuid: UUID) = channels[uuid]
 
@@ -33,6 +36,5 @@ class VoiceChannel(
     override fun hashCode(): Int {
         return uuid.hashCode()
     }
-
 
 }

@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="232.0" prefWidth="432.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wuzl.gui.WuzlGui">
+<HBox prefHeight="400.0" prefWidth="600.0" spacing="10.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wuzl.gui.WuzlGui">
    <children>
-      <ListView fx:id="channelListView" layoutX="14.0" layoutY="16.0" prefHeight="200.0" prefWidth="200.0" />
-      <Slider fx:id="volumeSlider" layoutX="214.0" layoutY="16.0" majorTickUnit="6.0" max="80.0" min="-6.0" minorTickCount="5" orientation="VERTICAL" prefHeight="200.0" showTickLabels="true" showTickMarks="true" />
-      <Button fx:id="connectButton" layoutX="268.0" layoutY="14.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" style="-fx-text-fill: green;" text="Connect" />
-      <Button fx:id="disconnectButton" layoutX="268.0" layoutY="189.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" style="-fx-text-fill: red;" text="Disconnect" />
+      <ListView fx:id="channelListView" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+         <HBox.margin>
+            <Insets />
+         </HBox.margin></ListView>
+      <Slider fx:id="volumeSlider" majorTickUnit="6.0" max="6.0" min="-80.0" minorTickCount="5" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" />
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+         <children>
+            <Button fx:id="connectButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" style="-fx-text-fill: green;" text="Connect" />
+            <Button fx:id="disconnectButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" style="-fx-text-fill: red;" text="Disconnect" />
+         </children>
+      </VBox>
    </children>
-</AnchorPane>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</HBox>

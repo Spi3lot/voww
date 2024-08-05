@@ -4,7 +4,7 @@ import jakarta.websocket.*
 import jakarta.websocket.CloseReason.CloseCodes
 import jakarta.websocket.server.PathParam
 import jakarta.websocket.server.ServerEndpoint
-import org.wuzl.communication.EndpointUri.RTC
+import org.wuzl.communication.EndpointUri.HUB
 import org.wuzl.communication.data.SessionDataEncoder
 import org.wuzl.communication.data.VoiceChannel
 import org.wuzl.server.TrafficManager
@@ -15,8 +15,8 @@ import java.util.*
  * @author Emilio Zottel
  * @since 19.07.2024, Fr.
  */
-@ServerEndpoint("/${RTC}/{channel}", encoders = [SessionDataEncoder::class])
-class RealTimeChat {
+@ServerEndpoint("/${HUB}", encoders = [SessionDataEncoder::class])
+class Hub {
 
     companion object {
 
