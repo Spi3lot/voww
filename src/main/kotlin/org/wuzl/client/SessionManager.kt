@@ -12,11 +12,11 @@ import org.wuzl.communication.data.VoiceChannel
  **/
 object SessionManager {
 
-    fun WebSocketClient.openSession(channel: VoiceChannel?): Session {
+    fun VoiceClient.openSession(channel: VoiceChannel?): Session {
         return openSession("$RTC/${channel?.uuid ?: ""}")
     }
 
-    fun WebSocketClient.openSession(path: String): Session {
+    fun <T : WebSocketClient> T.openSession(path: String): Session {
         return ContainerProvider.getWebSocketContainer().run {
             connectToServer(this@openSession, EndpointUri.absolute(path))
         }

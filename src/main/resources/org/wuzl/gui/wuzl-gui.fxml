@@ -14,7 +14,8 @@
       <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
          <children>
             <Button fx:id="connectButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" style="-fx-text-fill: green;" text="Connect" />
-            <Button fx:id="disconnectButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" style="-fx-text-fill: red;" text="Disconnect" />
+            <Button fx:id="disconnectButton" layoutX="10.0" layoutY="47.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" style="-fx-text-fill: red;" text="Disconnect" />
+            <Button fx:id="muteButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" style="-fx-text-fill: red;" text="Mute" visible="false" />
          </children>
       </VBox>
    </children>

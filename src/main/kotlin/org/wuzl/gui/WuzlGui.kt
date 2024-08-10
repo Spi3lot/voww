@@ -9,8 +9,10 @@ import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.scene.control.ListView
 import javafx.scene.control.Slider
+import javafx.scene.paint.Color
 import javafx.stage.Stage
-import org.wuzl.client.WebSocketClient
+import org.wuzl.client.ChannelClient
+import org.wuzl.client.VoiceClient
 import org.wuzl.communication.data.VoiceChannel
 
 fun main(args: Array<String>) {
@@ -33,9 +35,36 @@ class WuzlGui : Application() {
     lateinit var connectButton: Button
 
     @FXML
+    lateinit var muteButton: Button
+
+    @FXML
     lateinit var disconnectButton: Button
 
-    private val client = WebSocketClient(this)
+    private lateinit var voiceClient: VoiceClient
+
+    private lateinit var channelClient: ChannelClient
+
+    @FXML
+    fun initialize() {
+        voiceClient = VoiceClient()
+        channelClient = ChannelClient(this)
+        volumeSlider.valueProperty().addListener { _, _, newValue -> voiceClient.audioContainer.speakerGain = newValue.toFloat() }
+        muteButton.onAction = EventHandler { toggleMuteStatus() }
+
+        connectButton.onAction = EventHandler {
+            val channel = channelListView.selectionModel.selectedItem
+
+            if (channel != null) {
+                voiceClient.joinVoiceChannel(channel)
+                muteButton.isVisible = true
+            }
+        }
+
+        disconnectButton.onAction = EventHandler {
+            voiceClient.leaveVoiceChannel()
+            muteButton.isVisible = false
+        }
+    }
 
     override fun start(stage: Stage) {
         val root: Parent = FXMLLoader.load(WuzlGui::class.java.getResource("wuzl-gui.fxml"))
@@ -44,23 +73,26 @@ class WuzlGui : Application() {
         stage.show()
     }
 
-    fun initialize() {
-        connectButton.onAction = EventHandler {
-            val channel = channelListView.selectionModel.selectedItem
+    private fun toggleMuteStatus() {
+        val muted = isMuted() ?: return
 
-            if (channel != null) {  // Do not disconnect when trying to connect to nothing
-                client.joinVoiceChannel(channel)
-                client.startSending()
-            }
+        if (muted) {
+            voiceClient.startSending()
+            muteButton.text = "Mute"
+            muteButton.textFill = Color.RED
+        } else {
+            voiceClient.stopSending()
+            muteButton.text = "Unmute"
+            muteButton.textFill = Color.GREEN
+        }
+    }
+
+    private fun isMuted(): Boolean? {
+        if (voiceClient.session == null) {
+            return null
         }
 
-        disconnectButton.onAction = EventHandler {
-//            client.joinVoiceChannel(null)
-        }
-
-        volumeSlider.valueProperty().addListener { _, _, newValue ->
-            client.audioContainer.speakerGain = newValue.toFloat()
-        }
+        return voiceClient.senderThread == null
     }
 
 }

@@ -15,7 +15,7 @@ import java.util.*
  * @author Emilio Zottel
  * @since 19.07.2024, Fr.
  */
-@ServerEndpoint("/${RTC}/{channel}", encoders = [SessionDataEncoder::class])
+@ServerEndpoint("/$RTC/{channel}", encoders = [SessionDataEncoder::class])
 class RealTimeChat {
 
     companion object {
@@ -26,7 +26,7 @@ class RealTimeChat {
 
     @OnOpen
     fun onOpen(@PathParam("channel") uuid: String, session: Session) {
-        val channel = VoiceChannel[UUID.fromString(uuid)]
+        val channel = Hub.CHANNELS[UUID.fromString(uuid)]
 
         if (channel === null) {
             session.close(CloseReason(CloseCodes.UNEXPECTED_CONDITION, "VoiceChannel(uuid=$uuid) does not exist"))
@@ -41,13 +41,13 @@ class RealTimeChat {
 
     @OnMessage
     fun onMessage(@PathParam("channel") uuid: String, bytes: ByteBuffer, session: Session) {
-        TrafficManager.broadcast(bytes, sessions[VoiceChannel[UUID.fromString(uuid)]]!!, session)
+        TrafficManager.broadcast(bytes, sessions[Hub.CHANNELS[UUID.fromString(uuid)]]!!, session)
     }
 
     @OnClose
     fun onClose(@PathParam("channel") uuid: String, session: Session) {
         // TODO: handle non-existent uuid when closing session manually
-        sessions[VoiceChannel[UUID.fromString(uuid)]]!!.remove(session)
+        sessions[Hub.CHANNELS[UUID.fromString(uuid)]]!!.remove(session)
         println("${session.id} closed")
     }
 

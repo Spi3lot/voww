@@ -12,16 +12,6 @@ class VoiceChannel(
     private val name: String,
 ) : Serializable {
 
-    companion object {
-
-        private val channels = hashMapOf<UUID, VoiceChannel>(
-            with(UUID.randomUUID()) { this to VoiceChannel(this, "EÖV") }
-        )
-
-        operator fun get(uuid: UUID) = channels[uuid]
-
-    }
-
     override fun toString(): String {
         return name
     }
